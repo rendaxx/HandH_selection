@@ -9,40 +9,45 @@ public abstract class Creature {
     private final int minDmg;
 
     public Creature(int atk, int def, int maxHp, int minDmg, int maxDmg) {
-        if (atk < 1 || atk > 30) {
-            try {
-                throw new CreatureException.BadParametersException("Bad Attack value: " + atk);
-            } catch (CreatureException.BadParametersException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        checkAttack(atk);
         this.atk = atk;
-        if (def < 1 || def > 30) {
-            try {
-                throw new CreatureException.BadParametersException("Bad Defense value: " + def);
-            } catch (CreatureException.BadParametersException e) {
-                throw new RuntimeException(e);
-            }
-        }
+
+        checkDefense(def);
         this.def = def;
-        if (maxHp < 1) {
-            try {
-                throw new CreatureException.BadParametersException("Bad HP value: " + maxHp);
-            } catch (CreatureException.BadParametersException e) {
-                throw new RuntimeException(e);
-            }
-        }
+
+        checkHp(maxHp);
         this.maxHp = maxHp;
         this.curHp = maxHp;
-        if (minDmg > maxDmg || minDmg < 1) {
-            try {
-                throw new CreatureException.BadParametersException("Bad Damage values: minDmg=" + minDmg + "maxDmg=" + minDmg);
-            } catch (CreatureException.BadParametersException e) {
-                throw new RuntimeException(e);
-            }
-        }
+
+        checkDmg(minDmg, maxDmg);
         this.maxDmg = maxDmg;
         this.minDmg = minDmg;
+    }
+
+    private void checkAttack(int atk) {
+        if (atk < 1 || atk > 30) {
+            throw new RuntimeException(new CreatureException.BadParametersException("Bad Attack value: " + atk));
+        }
+    }
+
+    private void checkDefense(int def) {
+        if (def < 1 || def > 30) {
+            throw new RuntimeException(new CreatureException.BadParametersException("Bad Defense value: " + def));
+        }
+    }
+
+    public void checkHp(int maxHp) {
+        if (maxHp < 1) {
+            throw new RuntimeException(new CreatureException.BadParametersException("Bad HP value: " + maxHp));
+        }
+    }
+
+    public void checkDmg(int minDmg, int maxDmg) {
+        if (minDmg > maxDmg || minDmg < 1) {
+            throw new RuntimeException(
+                    new CreatureException.BadParametersException(
+                            "Bad Damage values: minDmg=" + minDmg + "maxDmg=" + minDmg));
+        }
     }
 
     public int getAtk() {
@@ -53,7 +58,7 @@ public abstract class Creature {
         return this.def;
     }
 
-    public int maxHp() {
+    public int getMaxHp() {
         return this.maxHp;
     }
 
@@ -69,7 +74,7 @@ public abstract class Creature {
     protected void setHp(int val) {
         if (val < 0) {
             this.curHp = 0;
-        } else this.curHp = Math.min(val, this.maxHp());
+        } else this.curHp = Math.min(val, this.getMaxHp());
     }
 
     public boolean isAlive() {
@@ -102,11 +107,7 @@ public abstract class Creature {
 
     public void hit(Creature other) {
         if (!this.isAlive()) {
-            try {
-                throw new CreatureException.DeadHitException("Hitting by dead " + this.getClass().getTypeName());
-            } catch (CreatureException.DeadHitException e) {
-                throw new RuntimeException(e);
-            }
+            throw new RuntimeException(new CreatureException.DeadHitException("Hitting by dead " + this.getClass().getTypeName()));
         }
         int mod = getMod(this.getAtk(), other.getDef());
         if (isSuccess(mod)) {

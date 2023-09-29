@@ -1,12 +1,12 @@
 public class Player extends Creature {
-    private int heal_pots = 4;
+    private int healPots = 4;
 
     public Player(int atk, int def, int maxHp, int minDmg, int maxDmg) {
         super(atk, def, maxHp, minDmg, maxDmg);
     }
 
     public int getPots() {
-        return this.heal_pots;
+        return this.healPots;
     }
 
     public boolean hasPots() {
@@ -14,17 +14,17 @@ public class Player extends Creature {
     }
 
     private int calcHeal() {
-        return this.maxHp() * 30 / 100;
+        return this.getMaxHp() * 30 / 100;
     }
 
     public boolean needsHealing() {
-        return this.getHp() <= this.maxHp() - this.calcHeal();
+        return this.getHp() <= this.getMaxHp() - this.calcHeal();
     }
     public void heal() {
         if (this.hasPots() && this.isAlive()) {
             int temp = this.getHp() + this.calcHeal();
             this.setHp(temp);
-            --heal_pots;
+            --healPots;
         }
     }
 }

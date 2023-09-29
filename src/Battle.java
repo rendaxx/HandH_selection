@@ -1,6 +1,6 @@
 public class Battle {
-    private Player p;
-    private Monster m;
+    private final Player p;
+    private final Monster m;
 
     public Battle(Player p, Monster m) {
         this.p = p;
@@ -23,14 +23,14 @@ public class Battle {
                 System.out.println("Monster did " + (temp - p.getHp()) + " damage");
             }
         }
-        if (p.isAlive()) {
+        if (m.isAlive()) {
             System.out.println("Monster wins");
         } else {
             System.out.println("Player wins");
         }
     }
 
-    public static void main(String ... args) {
+    public static void main(String[] args) {
         Battle battle = new Battle(new Player(2, 2, 10, 2, 4),
                 new Monster(3, 1, 8, 3, 5));
         battle.go();
